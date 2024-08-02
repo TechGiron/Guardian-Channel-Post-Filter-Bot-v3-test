@@ -9,6 +9,8 @@ from time import time
 from plugins.generate import database
 from pyrogram import Client, filters 
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message 
+import re
+import time
 
 async def send_message_in_chunks(client, chat_id, text):
     max_length = 4096  # Maximum length of a message
@@ -40,8 +42,12 @@ async def search(bot, message):
        return     
     if message.text.startswith("/"):
        return    
-    query   = message.text 
-    head    = f"<u>⭕ Here is the results {message.from_user.mention} 👇\n\n💢 Powered By </u> <b><I>@unicornguardian ❗</I></b>\n\n"
+    query = message.text.lower()  # Convert the query to lowercase
+    query_words = query.split()  # Split the query into individual words
+    filtered_query_words = [word for word in query_words if word not in ["the", "dubbed", "movie", "download", "movies", "hindi", "english", "punjabi", "marathi", "tamil", "gujarati", "bengali", "kannada", "telugu", "malayalam", "to", "of", "org", "hd", "dub", "pls", "please", "2023", "2022", "new", "2024", "2025", "2020", "2021"]]
+    query = " ".join(filtered_query_words)  # Reconstruct the filtered query
+    sts = await message.reply('Searching...💥')
+    start_time = time.time()  # Start measuring elapsed time
     results = ""
     try:
        for channel in channels:
