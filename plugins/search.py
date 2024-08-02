@@ -55,17 +55,19 @@ async def search(bot, message):
                name = (msg.text or msg.caption).split("\n")[0]
                if name in results:
                   continue 
-               results += f"<b><I>♻️ {name}\n🔗 {msg.link}</I></b>\n\n"                                                      
+               results += f"<b><I>♻️ {name}\n🔗 {msg.link}</I></b>\n\n"    
+       elapsed_time = time.time() - start_time - 2  # Calculate elapsed time
        if bool(results)==False:
           movies = await search_imdb(query)
           buttons = []
           for movie in movies: 
               buttons.append([InlineKeyboardButton(movie['title'], callback_data=f"recheck_{movie['id']}")])
-          msg = await message.reply_photo(photo="https://graph.org/file/c361a803c7b70fc50d435.jpg",
-                                          caption="<b><I>🔻 I Couldn't find anything related to Your Query😕.\n🔺 Did you mean any of these?</I></b>", 
+          msg = await sts.edit_text(text="<b><I>I Couldn't find anything related to Your Query😕.\nDid you mean any of these?</I></b>", 
                                           reply_markup=InlineKeyboardMarkup(buttons))
        else:
-          await send_message_in_chunks(bot, message.chat.id, head+results)
+          msg = await sts.edit_text(text=f"Showing results in {elapsed_time:.2f} sec\n\n{results}", disable_web_page_preview=True)
+       _time = (int(time()) + (15*60))
+       await save_dlt_message(msg, _time)
     except:
        pass
        
@@ -87,10 +89,11 @@ async def recheck(bot, update):
        return await update.answer("That's not for you! 👀", show_alert=True)
 
     m=await update.message.edit("**Searching..💥**")
+    start_time = time.time()  # Start measuring elapsed time
     id      = update.data.split("_")[-1]
     query   = await search_imdb(id)
     channels = (await get_group(update.message.chat.id))["channels"]
-    head    = "<u>⭕ I Have Searched Movie With Wrong Spelling But Take care next time 👇\n\n💢 Powered By </u> <b><I>@VJ_Botz ❗</I></b>\n\n"
+    head    = "<u>⭕ I Have Searched Movie With Wrong Spelling But Take care next time"
     results = ""
     try:
        for channel in channels:
@@ -99,9 +102,10 @@ async def recheck(bot, update):
                if name in results:
                   continue 
                results += f"<b><I>♻️🍿 {name}</I></b>\n\n🔗 {msg.link}</I></b>\n\n"
+       elapsed_time = time.time() - start_time - 2  # Calculate elapsed time
        if bool(results)==False:          
-          return await update.message.edit("🔺 Still no results found! Please Request To Group Admin 🔻", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🎯 Request To Admin 🎯", callback_data=f"request_{id}")]]))
-       await send_message_in_chunks(bot, update.message.chat.id, head+results)
+          return await update.message.edit("Still no results found! Please Request To Group Admin", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🎯 Request To Admin 🎯", callback_data=f"request_{id}")]]))
+       await update.message.edit(text=f"{head}\n\nShowing results in {elapsed_time:.2f} sec\n\n{results}", disable_web_page_preview=True)
     except Exception as e:
        await update.message.edit(f"❌ Error: `{e}`")
 
