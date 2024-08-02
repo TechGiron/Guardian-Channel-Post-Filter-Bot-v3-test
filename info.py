@@ -13,4 +13,4 @@ BOT_TOKEN    = environ.get("BOT_TOKEN", "5813956283:AAEbzFBRDHkOwCDRWW_d3zWZOqGG
 DATABASE_URI = environ.get("DATABASE_URI", "mongodb+srv://Guardian:03khd5TFckybkqKD@cluster0.lnqaahf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 LOG_CHANNEL  = int(environ.get("LOG_CHANNEL", "-1002231340475"))
 ADMIN        = int(environ.get("ADMIN", "5503019033"))
-CHANNEL      = environ.get("CHANNEL", "@VJ_Botz")
+CHANNEL      = environ.get("CHANNEL", "@unicornguardian")
