@@ -42,11 +42,11 @@ async def search(bot, message):
        return     
     if message.text.startswith("/"):
        return    
+    sts = await message.reply('Searching...💥')
     query = message.text.lower()  # Convert the query to lowercase
     query_words = query.split()  # Split the query into individual words
     filtered_query_words = [word for word in query_words if word not in ["the", "dubbed", "movie", "download", "movies", "hindi", "english", "punjabi", "marathi", "tamil", "gujarati", "bengali", "kannada", "telugu", "malayalam", "to", "of", "org", "hd", "dub", "pls", "please", "2023", "2022", "new", "2024", "2025", "2020", "2021"]]
     query = " ".join(filtered_query_words)  # Reconstruct the filtered query
-    sts = await message.reply('Searching...💥')
     start_time = time.time()  # Start measuring elapsed time
     results = ""
     try:
